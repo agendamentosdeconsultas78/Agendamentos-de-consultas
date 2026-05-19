@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agendamento de Consultas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="page-shell">
+    <header class="hero">
+        <div class="hero-copy">
+            <span class="eyebrow">Projeto Acadêmico • Spring Boot + PostgreSQL</span>
+            <h1>Agendamento inteligente para consultas médicas.</h1>
+            <p>Aplicação web com cadastro de pacientes, médicos e consultas, validação de conflitos de horário e controle de status em tempo real.</p>
+        </div>
+        <div class="hero-stats">
+            <article>
+                <span>Total de pacientes</span>
+                <strong th:text="${#lists.size(pacientes)}">0</strong>
+            </article>
+            <article>
+                <span>Total de médicos</span>
+                <strong th:text="${#lists.size(medicos)}">0</strong>
+            </article>
+            <article>
+                <span>Consultas registradas</span>
+                <strong th:text="${#lists.size(consultas)}">0</strong>
+            </article>
+        </div>
+    </header>
+
+    <section class="alerts" th:if="${mensagemSucesso != null or mensagemErro != null}">
+        <div class="alert success" th:if="${mensagemSucesso != null}" th:text="${mensagemSucesso}"></div>
+        <div class="alert error" th:if="${mensagemErro != null}" th:text="${mensagemErro}"></div>
+    </section>
+
+    <main class="grid">
+        <section class="panel">
+            <div class="section-title">
+                <h2>Cadastrar paciente</h2>
+                <p>Armazena dados básicos do paciente para uso no agendamento.</p>
+            </div>
+            <form class="form-grid" th:action="@{/pacientes}" th:object="${pacienteForm}" method="post">
+                <label>
+                    <span>Nome</span>
+                    <input type="text" th:field="*{nome}" placeholder="Nome completo">
+                    <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></small>
+                </label>
+                <label>
+                    <span>E-mail</span>
+                    <input type="email" th:field="*{email}" placeholder="paciente@email.com">
+                    <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                </label>
+                <label>
+                    <span>Telefone</span>
+                    <input type="text" th:field="*{telefone}" placeholder="(00) 00000-0000">
+                    <small th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></small>
+                </label>
+                <label>
+                    <span>Data de nascimento</span>
+                    <input type="date" th:field="*{dataNascimento}">
+                    <small th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}"></small>
+                </label>
+                <button type="submit">Salvar paciente</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <div class="section-title">
+                <h2>Cadastrar médico</h2>
+                <p>Cria o cadastro do profissional com especialidade e CRM.</p>
+            </div>
+            <form class="form-grid" th:action="@{/medicos}" th:object="${medicoForm}" method="post">
+                <label>
+                    <span>Nome</span>
+                    <input type="text" th:field="*{nome}" placeholder="Nome do médico">
+                    <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></small>
+                </label>
+                <label>
+                    <span>Especialidade</span>
+                    <input type="text" th:field="*{especialidade}" placeholder="Ex.: Clínica Geral">
+                    <small th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></small>
+                </label>
+                <label>
+                    <span>CRM</span>
+                    <input type="text" th:field="*{crm}" placeholder="CRM/UF 123456">
+                    <small th:if="${#fields.hasErrors('crm')}" th:errors="*{crm}"></small>
+                </label>
+                <label>
+                    <span>E-mail</span>
+                    <input type="email" th:field="*{email}" placeholder="medico@email.com">
+                    <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                </label>
+                <button type="submit">Salvar médico</button>
+            </form>
+        </section>
+
+        <section class="panel panel-wide">
+            <div class="section-title">
+                <h2>Agendar consulta</h2>
+                <p>Seleciona paciente, médico e horário. O sistema impede conflito de consultas ativas para o mesmo médico.</p>
+            </div>
+            <form class="form-grid schedule-grid" th:action="@{/consultas}" th:object="${consultaForm}" method="post">
+                <label>
+                    <span>Paciente</span>
+                    <select th:field="*{pacienteId}">
+                        <option value="">Selecione</option>
+                        <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nome}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('pacienteId')}" th:errors="*{pacienteId}"></small>
+                </label>
+                <label>
+                    <span>Médico</span>
+                    <select th:field="*{medicoId}">
+                        <option value="">Selecione</option>
+                        <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome + ' • ' + medico.especialidade}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('medicoId')}" th:errors="*{medicoId}"></small>
+                </label>
+                <label>
+                    <span>Data e horário</span>
+                    <input type="datetime-local" th:field="*{dataHora}">
+                    <small th:if="${#fields.hasErrors('dataHora')}" th:errors="*{dataHora}"></small>
+                </label>
+                <label class="full-width">
+                    <span>Observações</span>
+                    <textarea th:field="*{observacoes}" rows="4" placeholder="Informações adicionais sobre a consulta"></textarea>
+                </label>
+                <button type="submit">Agendar consulta</button>
+            </form>
+        </section>
+
+        <section class="panel panel-wide">
+            <div class="section-title">
+                <h2>Consultas agendadas</h2>
+                <p>Painel consolidado com paciente, médico, data e atualização de status.</p>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Médico</th>
+                        <th>Especialidade</th>
+                        <th>Data/Hora</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(consultas)}">
+                        <td colspan="6" class="empty-state">Nenhuma consulta cadastrada até o momento.</td>
+                    </tr>
+                    <tr th:each="consulta : ${consultas}">
+                        <td th:text="${consulta.paciente.nome}"></td>
+                        <td th:text="${consulta.medico.nome}"></td>
+                        <td th:text="${consulta.medico.especialidade}"></td>
+                        <td th:text="${#temporals.format(consulta.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <span class="status-chip" th:classappend="${' status-' + #strings.toLowerCase(consulta.status.name())}" th:text="${consulta.status}"></span>
+                        </td>
+                        <td>
+                            <div class="action-row">
+                                <form th:action="@{/consultas/{id}/status(id=${consulta.id})}" method="post">
+                                    <input type="hidden" name="status" value="CONFIRMADA">
+                                    <button type="submit" class="ghost-btn">Confirmar</button>
+                                </form>
+                                <form th:action="@{/consultas/{id}/status(id=${consulta.id})}" method="post">
+                                    <input type="hidden" name="status" value="CANCELADA">
+                                    <button type="submit" class="ghost-btn danger">Cancelar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
