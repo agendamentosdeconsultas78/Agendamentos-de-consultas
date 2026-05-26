@@ -303,9 +303,9 @@ th {
 
 @media (max-width: 920px) {
     .hero h1{
-        front-size: 2rem;
+        font-size: 2rem;
     }
-    },
+    }
     .grid,
     .schedule-grid {
         grid-template-columns: 1fr;
@@ -320,4 +320,4 @@ th {
     .panel {
         padding: 22px;
     }
-}
+
