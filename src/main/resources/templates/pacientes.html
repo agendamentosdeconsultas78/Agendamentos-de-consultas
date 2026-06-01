@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacientes | Agenda Clinic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments/app :: sidebar(${paginaAtiva})}"></div>
+
+    <main class="content-shell">
+        <div th:replace="~{fragments/app :: topbar('Pacientes', 'Cadastro e acompanhamento da base de atendimento')}"></div>
+        <div th:replace="~{fragments/app :: alerts}"></div>
+
+        <section class="content-grid two-columns">
+            <article class="surface-card">
+                <div class="section-heading">
+                    <h2>Novo paciente</h2>
+                    <p>Esse modulo fica disponivel para atendente e administrador.</p>
+                </div>
+                <form class="form-grid" th:action="@{/pacientes}" th:object="${pacienteForm}" method="post">
+                    <label>
+                        <span>Nome</span>
+                        <input type="text" th:field="*{nome}" placeholder="Nome completo">
+                        <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></small>
+                    </label>
+                    <label>
+                        <span>E-mail</span>
+                        <input type="email" th:field="*{email}" placeholder="paciente@email.com">
+                        <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                    </label>
+                    <label>
+                        <span>Telefone</span>
+                        <input type="text" th:field="*{telefone}" placeholder="(00) 00000-0000">
+                        <small th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></small>
+                    </label>
+                    <label>
+                        <span>Data de nascimento</span>
+                        <input type="date" th:field="*{dataNascimento}">
+                        <small th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}"></small>
+                    </label>
+                    <button type="submit">Salvar paciente</button>
+                </form>
+            </article>
+
+            <article class="surface-card accent-panel">
+                <div class="section-heading">
+                    <h2>Boas praticas</h2>
+                    <p>Dados limpos deixam a agenda e a API mais consistentes.</p>
+                </div>
+                <ul class="feature-list">
+                    <li>Evite e-mails duplicados para nao bloquear novos cadastros.</li>
+                    <li>Padronize telefone para facilitar contato posterior.</li>
+                    <li>Cadastre a data de nascimento corretamente para passar na validacao.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="surface-card">
+            <div class="section-heading">
+                <h2>Pacientes cadastrados</h2>
+                <p>Lista completa para consulta rapida da equipe.</p>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Telefone</th>
+                        <th>Nascimento</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(pacientes)}">
+                        <td colspan="4" class="empty-state">Nenhum paciente cadastrado ate o momento.</td>
+                    </tr>
+                    <tr th:each="paciente : ${pacientes}">
+                        <td th:text="${paciente.nome}"></td>
+                        <td th:text="${paciente.email}"></td>
+                        <td th:text="${paciente.telefone}"></td>
+                        <td th:text="${#temporals.format(paciente.dataNascimento, 'dd/MM/yyyy')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

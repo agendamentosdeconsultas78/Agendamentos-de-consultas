@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas | Agenda Clinic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments/app :: sidebar(${paginaAtiva})}"></div>
+
+    <main class="content-shell">
+        <div th:replace="~{fragments/app :: topbar('Consultas', 'Agenda operacional com regras e status por perfil')}"></div>
+        <div th:replace="~{fragments/app :: alerts}"></div>
+
+        <section class="content-grid two-columns">
+            <article class="surface-card">
+                <div class="section-heading">
+                    <h2>Agendar consulta</h2>
+                    <p>O backend impede conflito de horario para o mesmo medico.</p>
+                </div>
+                <form class="form-grid" th:action="@{/consultas}" th:object="${consultaForm}" method="post">
+                    <label>
+                        <span>Paciente</span>
+                        <select th:field="*{pacienteId}">
+                            <option value="">Selecione</option>
+                            <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nome}"></option>
+                        </select>
+                        <small th:if="${#fields.hasErrors('pacienteId')}" th:errors="*{pacienteId}"></small>
+                    </label>
+                    <label>
+                        <span>Medico</span>
+                        <select th:field="*{medicoId}">
+                            <option value="">Selecione</option>
+                            <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome + ' - ' + medico.especialidade}"></option>
+                        </select>
+                        <small th:if="${#fields.hasErrors('medicoId')}" th:errors="*{medicoId}"></small>
+                    </label>
+                    <label>
+                        <span>Data e horario</span>
+                        <input type="datetime-local" th:field="*{dataHora}">
+                        <small th:if="${#fields.hasErrors('dataHora')}" th:errors="*{dataHora}"></small>
+                    </label>
+                    <label>
+                        <span>Observacoes</span>
+                        <textarea th:field="*{observacoes}" rows="4" placeholder="Informacoes complementares"></textarea>
+                    </label>
+                    <button type="submit">Agendar consulta</button>
+                </form>
+            </article>
+
+            <article class="surface-card accent-panel">
+                <div class="section-heading">
+                    <h2>Permissoes na agenda</h2>
+                    <p>A visualizacao e ampla, mas as acoes sensiveis continuam restritas.</p>
+                </div>
+                <ul class="feature-list">
+                    <li>Atendente pode criar consultas e consultar agenda.</li>
+                    <li>Administrador pode confirmar ou cancelar atendimentos.</li>
+                    <li>Consultas em data passada sao barradas na validacao.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="surface-card">
+            <div class="section-heading">
+                <h2>Agenda completa</h2>
+                <p>Lista consolidada com paciente, medico e controle de status.</p>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Medico</th>
+                        <th>Especialidade</th>
+                        <th>Data/Hora</th>
+                        <th>Status</th>
+                        <th>Acao</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(consultas)}">
+                        <td colspan="6" class="empty-state">Nenhuma consulta cadastrada ate o momento.</td>
+                    </tr>
+                    <tr th:each="consulta : ${consultas}">
+                        <td th:text="${consulta.paciente.nome}"></td>
+                        <td th:text="${consulta.medico.nome}"></td>
+                        <td th:text="${consulta.medico.especialidade}"></td>
+                        <td th:text="${#temporals.format(consulta.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <span class="status-chip" th:classappend="${' status-' + #strings.toLowerCase(consulta.status.name())}" th:text="${consulta.status}"></span>
+                        </td>
+                        <td>
+                            <div class="action-row" sec:authorize="hasRole('ADMIN')">
+                                <form th:action="@{/consultas/{id}/status(id=${consulta.id})}" method="post">
+                                    <input type="hidden" name="status" value="CONFIRMADA">
+                                    <button type="submit" class="ghost-btn">Confirmar</button>
+                                </form>
+                                <form th:action="@{/consultas/{id}/status(id=${consulta.id})}" method="post">
+                                    <input type="hidden" name="status" value="CANCELADA">
+                                    <button type="submit" class="ghost-btn danger">Cancelar</button>
+                                </form>
+                            </div>
+                            <span class="table-note" sec:authorize="hasRole('ATENDENTE') and !hasRole('ADMIN')">Somente administrador altera o status.</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

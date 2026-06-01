@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicos | Agenda Clinic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments/app :: sidebar(${paginaAtiva})}"></div>
+
+    <main class="content-shell">
+        <div th:replace="~{fragments/app :: topbar('Medicos', 'Modulo restrito para administracao da equipe clinica')}"></div>
+        <div th:replace="~{fragments/app :: alerts}"></div>
+
+        <section class="content-grid two-columns">
+            <article class="surface-card">
+                <div class="section-heading">
+                    <h2>Novo medico</h2>
+                    <p>Somente administradores podem criar ou manter esse cadastro.</p>
+                </div>
+                <form class="form-grid" th:action="@{/medicos}" th:object="${medicoForm}" method="post">
+                    <label>
+                        <span>Nome</span>
+                        <input type="text" th:field="*{nome}" placeholder="Nome do medico">
+                        <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></small>
+                    </label>
+                    <label>
+                        <span>Especialidade</span>
+                        <input type="text" th:field="*{especialidade}" placeholder="Ex.: Clinica Geral">
+                        <small th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></small>
+                    </label>
+                    <label>
+                        <span>CRM</span>
+                        <input type="text" th:field="*{crm}" placeholder="CRM/UF 123456">
+                        <small th:if="${#fields.hasErrors('crm')}" th:errors="*{crm}"></small>
+                    </label>
+                    <label>
+                        <span>E-mail</span>
+                        <input type="email" th:field="*{email}" placeholder="medico@email.com">
+                        <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                    </label>
+                    <button type="submit">Salvar medico</button>
+                </form>
+            </article>
+
+            <article class="surface-card accent-panel">
+                <div class="section-heading">
+                    <h2>Controle de acesso</h2>
+                    <p>Essa separacao evita que qualquer perfil altere o corpo clinico.</p>
+                </div>
+                <ul class="feature-list">
+                    <li>Cadastro de medico e restrito ao perfil `ADMIN`.</li>
+                    <li>O CRM e validado para nao repetir profissionais.</li>
+                    <li>O acesso da tela tambem e limitado pelo backend.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="surface-card">
+            <div class="section-heading">
+                <h2>Corpo clinico</h2>
+                <p>Base de profissionais disponiveis para o agendamento.</p>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Especialidade</th>
+                        <th>CRM</th>
+                        <th>E-mail</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(medicos)}">
+                        <td colspan="4" class="empty-state">Nenhum medico cadastrado ate o momento.</td>
+                    </tr>
+                    <tr th:each="medico : ${medicos}">
+                        <td th:text="${medico.nome}"></td>
+                        <td th:text="${medico.especialidade}"></td>
+                        <td th:text="${medico.crm}"></td>
+                        <td th:text="${medico.email}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

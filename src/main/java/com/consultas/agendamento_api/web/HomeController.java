@@ -1,12 +1,16 @@
 package com.consultas.agendamento_api.web;
 
 import com.consultas.agendamento_api.model.StatusConsulta;
+import com.consultas.agendamento_api.model.Consulta;
+import com.consultas.agendamento_api.model.Medico;
+import com.consultas.agendamento_api.model.Paciente;
 import com.consultas.agendamento_api.service.AgendamentoService;
 import com.consultas.agendamento_api.service.RegraNegocioException;
 import com.consultas.agendamento_api.web.form.ConsultaForm;
 import com.consultas.agendamento_api.web.form.MedicoForm;
 import com.consultas.agendamento_api.web.form.PacienteForm;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,9 +31,32 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(Model model) {
-        popularModelo(model);
-        return "index";
+    public String home() {
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        popularModelo(model, "dashboard");
+        return "dashboard";
+    }
+
+    @GetMapping("/pacientes")
+    public String pacientes(Model model) {
+        popularModelo(model, "pacientes");
+        return "pacientes";
+    }
+
+    @GetMapping("/medicos")
+    public String medicos(Model model) {
+        popularModelo(model, "medicos");
+        return "medicos";
+    }
+
+    @GetMapping("/consultas")
+    public String consultas(Model model) {
+        popularModelo(model, "consultas");
+        return "consultas";
     }
 
     @PostMapping("/pacientes")
@@ -41,18 +68,18 @@ public class HomeController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            popularModelo(model);
-            return "index";
+            popularModelo(model, "pacientes");
+            return "pacientes";
         }
 
         try {
             agendamentoService.cadastrarPaciente(pacienteForm);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Paciente cadastrado com sucesso.");
-            return "redirect:/";
+            return "redirect:/pacientes";
         } catch (RegraNegocioException ex) {
             model.addAttribute("mensagemErro", ex.getMessage());
-            popularModelo(model);
-            return "index";
+            popularModelo(model, "pacientes");
+            return "pacientes";
         }
     }
 
@@ -65,18 +92,18 @@ public class HomeController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            popularModelo(model);
-            return "index";
+            popularModelo(model, "medicos");
+            return "medicos";
         }
 
         try {
             agendamentoService.cadastrarMedico(medicoForm);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Medico cadastrado com sucesso.");
-            return "redirect:/";
+            return "redirect:/medicos";
         } catch (RegraNegocioException ex) {
             model.addAttribute("mensagemErro", ex.getMessage());
-            popularModelo(model);
-            return "index";
+            popularModelo(model, "medicos");
+            return "medicos";
         }
     }
 
@@ -89,18 +116,18 @@ public class HomeController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            popularModelo(model);
-            return "index";
+            popularModelo(model, "consultas");
+            return "consultas";
         }
 
         try {
             agendamentoService.agendarConsulta(consultaForm);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Consulta agendada com sucesso.");
-            return "redirect:/";
+            return "redirect:/consultas";
         } catch (RegraNegocioException ex) {
             model.addAttribute("mensagemErro", ex.getMessage());
-            popularModelo(model);
-            return "index";
+            popularModelo(model, "consultas");
+            return "consultas";
         }
     }
 
@@ -115,7 +142,7 @@ public class HomeController {
         } catch (RegraNegocioException ex) {
             redirectAttributes.addFlashAttribute("mensagemErro", ex.getMessage());
         }
-        return "redirect:/";
+        return "redirect:/consultas";
     }
 
     @ModelAttribute("pacienteForm")
@@ -133,10 +160,16 @@ public class HomeController {
         return new ConsultaForm();
     }
 
-    private void popularModelo(Model model) {
-        model.addAttribute("pacientes", agendamentoService.listarPacientes());
-        model.addAttribute("medicos", agendamentoService.listarMedicos());
-        model.addAttribute("consultas", agendamentoService.listarConsultas());
+    private void popularModelo(Model model, String paginaAtiva) {
+        List<Paciente> pacientes = agendamentoService.listarPacientes();
+        List<Medico> medicos = agendamentoService.listarMedicos();
+        List<Consulta> consultas = agendamentoService.listarConsultas();
+
+        model.addAttribute("pacientes", pacientes);
+        model.addAttribute("medicos", medicos);
+        model.addAttribute("consultas", consultas);
+        model.addAttribute("consultasRecentes", consultas.stream().limit(5).toList());
         model.addAttribute("statusConsulta", StatusConsulta.values());
+        model.addAttribute("paginaAtiva", paginaAtiva);
     }
 }

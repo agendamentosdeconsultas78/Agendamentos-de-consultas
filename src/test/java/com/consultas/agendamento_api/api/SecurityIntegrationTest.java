@@ -28,6 +28,13 @@ class SecurityIntegrationTest {
     }
 
     @Test
+    void atendenteNaoPodeAcessarTelaDeMedicos() throws Exception {
+        mockMvc.perform(get("/medicos")
+                        .with(httpBasic("atendente", "atendente123")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void atendenteNaoPodeCadastrarMedicoNaApi() throws Exception {
         mockMvc.perform(post("/api/medicos")
                         .with(httpBasic("atendente", "atendente123"))

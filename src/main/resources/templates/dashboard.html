@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Agenda Clinic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments/app :: sidebar(${paginaAtiva})}"></div>
+
+    <main class="content-shell">
+        <div th:replace="~{fragments/app :: topbar('Painel central', 'Resumo rapido da operacao da clinica')}"></div>
+        <div th:replace="~{fragments/app :: alerts}"></div>
+        <div th:replace="~{fragments/app :: metrics}"></div>
+
+        <section class="content-grid two-columns">
+            <article class="surface-card spotlight-card">
+                <div class="section-heading">
+                    <h2>Fluxo do sistema</h2>
+                    <p>Uma visao objetiva do que cada perfil executa durante o dia.</p>
+                </div>
+                <ol class="timeline-list">
+                    <li>Paciente e cadastrado pelo atendente ou administrador.</li>
+                    <li>Administrador gerencia a base de medicos.</li>
+                    <li>Consultas sao agendadas com validacao de horario.</li>
+                    <li>Administrador confirma ou cancela conforme a agenda.</li>
+                </ol>
+            </article>
+
+            <article class="surface-card">
+                <div class="section-heading">
+                    <h2>Acesso por perfil</h2>
+                    <p>As funcoes da interface respeitam o RBAC configurado no backend.</p>
+                </div>
+                <div class="role-grid">
+                    <div class="role-card">
+                        <span class="pill neutral">ATENDENTE</span>
+                        <p>Cadastra pacientes, acessa dashboard, consulta agenda e cria novos agendamentos.</p>
+                    </div>
+                    <div class="role-card">
+                        <span class="pill accent">ADMIN</span>
+                        <p>Tem acesso total, inclusive modulo de medicos e alteracao do status da consulta.</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="surface-card">
+            <div class="section-heading">
+                <h2>Ultimas consultas</h2>
+                <p>Os cinco registros mais recentes para acompanhamento rapido.</p>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Medico</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(consultasRecentes)}">
+                        <td colspan="4" class="empty-state">Nenhuma consulta registrada ainda.</td>
+                    </tr>
+                    <tr th:each="consulta : ${consultasRecentes}">
+                        <td th:text="${consulta.paciente.nome}"></td>
+                        <td th:text="${consulta.medico.nome}"></td>
+                        <td th:text="${#temporals.format(consulta.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td>
+                            <span class="status-chip" th:classappend="${' status-' + #strings.toLowerCase(consulta.status.name())}" th:text="${consulta.status}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
