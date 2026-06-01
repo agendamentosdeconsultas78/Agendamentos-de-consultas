@@ -11,12 +11,14 @@ Projeto academico em Spring Boot para cadastro de pacientes, medicos e consultas
 - Validacao para evitar conflito de horario do mesmo medico.
 - Interface web com Thymeleaf.
 - API REST documentada com Swagger.
+- Seguranca com Spring Security, BCrypt e RBAC.
 
 ## Tecnologias
 
 - Java 21
 - Spring Boot 3
 - Spring Web
+- Spring Security
 - Spring Data JPA
 - Thymeleaf
 - PostgreSQL
@@ -47,6 +49,19 @@ Projeto academico em Spring Boot para cadastro de pacientes, medicos e consultas
 - `http://localhost:8080/swagger-ui.html`
 - `http://localhost:8080/v3/api-docs`
 
+## Seguranca
+
+- Autenticacao para interface web e API.
+- Senhas tratadas com `BCryptPasswordEncoder`.
+- Perfis `ADMIN` e `ATENDENTE`.
+- `ADMIN` pode cadastrar medicos e atualizar status de consultas.
+- `ATENDENTE` pode listar dados, cadastrar pacientes e agendar consultas.
+
+Credenciais padrao de desenvolvimento:
+
+- `admin / admin123`
+- `atendente / atendente123`
+
 ## Banco de dados
 
 O banco principal da aplicacao e PostgreSQL.
@@ -62,6 +77,10 @@ Variaveis aceitas:
 - `DATABASE_URL`
 - `PGUSER`
 - `PGPASSWORD`
+- `APP_SECURITY_ADMIN_USERNAME`
+- `APP_SECURITY_ADMIN_PASSWORD`
+- `APP_SECURITY_ATENDENTE_USERNAME`
+- `APP_SECURITY_ATENDENTE_PASSWORD`
 
 ## Como executar
 

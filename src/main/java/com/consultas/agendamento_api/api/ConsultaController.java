@@ -42,12 +42,6 @@ public class ConsultaController {
 
     @PatchMapping("/{id}/status")
     public ConsultaResponse atualizarStatus(@PathVariable Long id, @Valid @RequestBody AtualizarStatusRequest request) {
-        agendamentoService.atualizarStatus(id, request.status());
-        return agendamentoService.listarConsultas()
-                .stream()
-                .filter(consulta -> consulta.getId().equals(id))
-                .findFirst()
-                .map(ConsultaResponse::from)
-                .orElseThrow(() -> new IllegalStateException("Consulta atualizada nao encontrada."));
+        return ConsultaResponse.from(agendamentoService.atualizarStatus(id, request.status()));
     }
 }

@@ -84,11 +84,11 @@ public class AgendamentoService {
     }
 
     @Transactional
-    public void atualizarStatus(Long consultaId, StatusConsulta status) {
+    public Consulta atualizarStatus(Long consultaId, StatusConsulta status) {
         Consulta consulta = consultaRepository.findById(consultaId)
                 .orElseThrow(() -> new RegraNegocioException("Consulta nao encontrada."));
         consulta.setStatus(status);
-        consultaRepository.save(consulta);
+        return consultaRepository.save(consulta);
     }
 
     @Transactional(readOnly = true)
@@ -104,5 +104,11 @@ public class AgendamentoService {
     @Transactional(readOnly = true)
     public List<Consulta> listarConsultas() {
         return consultaRepository.findAllByOrderByDataHoraAsc();
+    }
+
+    @Transactional(readOnly = true)
+    public Consulta buscarConsultaPorId(Long consultaId) {
+        return consultaRepository.findById(consultaId)
+                .orElseThrow(() -> new RegraNegocioException("Consulta nao encontrada."));
     }
 }
