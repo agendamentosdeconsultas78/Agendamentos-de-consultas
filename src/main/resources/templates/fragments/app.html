@@ -11,21 +11,26 @@
     </div>
 
     <nav class="nav-links">
+        <span class="nav-label">Menu</span>
         <a th:href="@{/dashboard}" th:classappend="${activePage == 'dashboard'} ? ' is-active'">
+            <i class="nav-icon">VG</i>
             <span>Visao geral</span>
             <small>Indicadores e ultimas consultas</small>
         </a>
         <a th:href="@{/pacientes}" th:classappend="${activePage == 'pacientes'} ? ' is-active'">
+            <i class="nav-icon">PC</i>
             <span>Pacientes</span>
             <small>Cadastro e consulta rapida</small>
         </a>
         <a th:href="@{/consultas}" th:classappend="${activePage == 'consultas'} ? ' is-active'">
+            <i class="nav-icon">AG</i>
             <span>Consultas</span>
             <small>Agenda e status</small>
         </a>
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/medicos}" th:classappend="${activePage == 'medicos'} ? ' is-active'">
+            <i class="nav-icon">MD</i>
             <span>Medicos</span>
-            <small>Area restrita ao administrador</small>
+            <small>Gerenciar profissionais</small>
         </a>
     </nav>
 
@@ -33,21 +38,27 @@
         <span class="access-label">Perfil ativo</span>
         <strong sec:authorize="hasRole('ADMIN')">Administrador</strong>
         <strong sec:authorize="hasRole('ATENDENTE') and !hasRole('ADMIN')">Atendente</strong>
-        <p sec:authorize="hasRole('ADMIN')">Pode gerenciar medicos e atualizar status de consultas.</p>
-        <p sec:authorize="hasRole('ATENDENTE') and !hasRole('ADMIN')">Pode cadastrar pacientes e organizar a agenda.</p>
+        <p sec:authorize="hasRole('ADMIN')">Gerencia equipe, agenda e status das consultas.</p>
+        <p sec:authorize="hasRole('ATENDENTE') and !hasRole('ADMIN')">Cadastra pacientes e organiza novos agendamentos.</p>
     </section>
 </aside>
 
 <header class="topbar" th:fragment="topbar(title, subtitle)">
     <div>
-        <p class="kicker" th:text="${title}">Titulo</p>
+        <p class="kicker" th:text="${'Ola, ' + #authentication.name}">Ola, usuario</p>
         <h1 th:text="${subtitle}">Subtitulo</h1>
+        <small class="topbar-subtitle" th:text="${title}">Titulo</small>
     </div>
     <div class="topbar-actions">
+        <button type="button" class="icon-btn" aria-label="Notificacoes">N</button>
+        <button type="button" class="icon-btn" aria-label="Configuracoes">C</button>
         <div class="identity">
-            <span sec:authentication="name">usuario</span>
-            <small sec:authorize="hasRole('ADMIN')">ROLE_ADMIN</small>
-            <small sec:authorize="hasRole('ATENDENTE') and !hasRole('ADMIN')">ROLE_ATENDENTE</small>
+            <div>
+                <span sec:authentication="name">usuario</span>
+                <small sec:authorize="hasRole('ADMIN')">ROLE_ADMIN</small>
+                <small sec:authorize="hasRole('ATENDENTE') and !hasRole('ADMIN')">ROLE_ATENDENTE</small>
+            </div>
+            <b class="identity-avatar">AC</b>
         </div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="ghost-btn neutral">Sair</button>
@@ -62,16 +73,28 @@
 
 <section class="metrics-grid" th:fragment="metrics">
     <article class="metric-card">
-        <span>Pacientes</span>
-        <strong th:text="${#lists.size(pacientes)}">0</strong>
+        <i class="metric-icon">PC</i>
+        <div>
+            <span>Pacientes</span>
+            <strong th:text="${#lists.size(pacientes)}">0</strong>
+            <small>Novos hoje</small>
+        </div>
     </article>
     <article class="metric-card">
-        <span>Medicos</span>
-        <strong th:text="${#lists.size(medicos)}">0</strong>
+        <i class="metric-icon violet">MD</i>
+        <div>
+            <span>Medicos</span>
+            <strong th:text="${#lists.size(medicos)}">0</strong>
+            <small>Ativos hoje</small>
+        </div>
     </article>
     <article class="metric-card">
-        <span>Consultas</span>
-        <strong th:text="${#lists.size(consultas)}">0</strong>
+        <i class="metric-icon blue">AG</i>
+        <div>
+            <span>Consultas</span>
+            <strong th:text="${#lists.size(consultas)}">0</strong>
+            <small>Agendadas hoje</small>
+        </div>
     </article>
 </section>
 </body>
