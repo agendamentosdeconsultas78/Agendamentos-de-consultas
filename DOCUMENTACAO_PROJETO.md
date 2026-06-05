@@ -2,7 +2,7 @@
 
 ## 1. Visao geral
 
-Projeto academico desenvolvido em Java 21 com Spring Boot para gerenciar pacientes, medicos e consultas. O sistema possui interface web com Thymeleaf, API REST documentada com Swagger, persistencia com PostgreSQL e testes automatizados com H2.
+Projeto academico desenvolvido em Java 25 (LTS) com Spring Boot para gerenciar pacientes, medicos e consultas. O sistema possui interface web com Thymeleaf, API REST documentada com Swagger, persistencia com PostgreSQL e testes automatizados com H2.
 
 ## 2. Objetivo do sistema
 
@@ -326,7 +326,7 @@ Agora o OpenAPI inclui o esquema `basicAuth`, refletindo a autenticacao exigida.
 Esse roteiro pode ser apresentado como cronologia do grupo.
 
 1. Definimos o problema: controlar pacientes, medicos e consultas.
-2. Escolhemos Java 21 e Spring Boot para acelerar o backend.
+2. Escolhemos Java 25 (LTS) e Spring Boot para acelerar o backend.
 3. Modelamos as entidades principais: `Paciente`, `Medico` e `Consulta`.
 4. Criamos o enum `StatusConsulta` para padronizar o estado da consulta.
 5. Criamos os repositories com Spring Data JPA.

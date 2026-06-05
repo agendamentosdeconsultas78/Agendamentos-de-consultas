@@ -15,7 +15,7 @@ Projeto academico em Spring Boot para cadastro de pacientes, medicos e consultas
 
 ## Tecnologias
 
-- Java 21
+- Java 25 (latest LTS)
 - Spring Boot 3
 - Spring Web
 - Spring Security
