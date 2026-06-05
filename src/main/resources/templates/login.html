@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Agenda Clinic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="login-hero-panel">
+        <div class="login-brand">
+            <span class="brand-mark">AC</span>
+            <div>
+                <strong>Agenda Clinic</strong>
+                <p>Painel operacional para clinicas</p>
+            </div>
+        </div>
+
+        <div class="login-copy">
+            <span class="login-pill">Acesso seguro</span>
+            <h1>Agende, acompanhe e organize atendimentos com clareza.</h1>
+            <p>Entre para acessar pacientes, profissionais, consultas e indicadores da rotina clinica.</p>
+        </div>
+
+        <div class="login-stat-grid">
+            <div>
+                <strong>24h</strong>
+                <span>agenda protegida</span>
+            </div>
+            <div>
+                <strong>RBAC</strong>
+                <span>permissoes por perfil</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="login-card" aria-labelledby="login-title">
+        <span class="login-card-icon">AC</span>
+        <p class="kicker">Bem-vindo de volta</p>
+        <h2 id="login-title">Acesse sua conta</h2>
+        <p class="login-card-subtitle">Use suas credenciais para continuar no painel da clinica.</p>
+
+        <div class="alert success" th:if="${param.logout}">Voce foi desconectado com sucesso.</div>
+        <div class="alert error" th:if="${param.error}">Usuario ou senha invalidos.</div>
+
+        <form class="login-form" th:action="@{/login}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <label>
+                <span>Usuario</span>
+                <input type="text" name="username" autocomplete="username" placeholder="Digite seu usuario" required autofocus>
+            </label>
+
+            <label>
+                <span>Senha</span>
+                <input type="password" name="password" autocomplete="current-password" placeholder="Digite sua senha" required>
+            </label>
+
+            <button type="submit">Entrar no painel</button>
+        </form>
+
+        <div class="login-demo-access">
+            <span>Atendente: atendente / atendente123</span>
+            <span>Admin: admin / admin123</span>
+        </div>
+    </section>
+</main>
+</body>
+</html>

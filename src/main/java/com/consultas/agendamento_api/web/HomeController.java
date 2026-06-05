@@ -35,6 +35,11 @@ public class HomeController {
         return "redirect:/dashboard";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         popularModelo(model, "dashboard");

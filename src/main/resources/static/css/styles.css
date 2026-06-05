@@ -822,6 +822,237 @@ tr:last-child td {
     padding: 28px 16px;
 }
 
+.login-page {
+    min-height: 100vh;
+    background:
+        linear-gradient(105deg, rgba(5, 32, 48, 0.88) 0%, rgba(8, 58, 78, 0.58) 42%, rgba(237, 245, 255, 0.1) 100%),
+        url("../img/login-clinic-hero.png") center / cover fixed no-repeat;
+}
+
+.login-page::before {
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    opacity: 0.62;
+}
+
+.login-page::after {
+    inset: auto -18% -20% -6%;
+    height: 52vh;
+    background: linear-gradient(110deg, rgba(18, 201, 184, 0.46), rgba(42, 156, 242, 0.26), rgba(255, 255, 255, 0.12));
+}
+
+.login-shell {
+    width: min(1180px, calc(100% - 40px));
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 34px 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(360px, 440px);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.login-hero-panel,
+.login-card {
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    backdrop-filter: blur(26px) saturate(140%);
+    -webkit-backdrop-filter: blur(26px) saturate(140%);
+    box-shadow: 0 32px 80px rgba(1, 18, 28, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.login-hero-panel {
+    min-height: 680px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    color: #effcff;
+    border-radius: 30px;
+    background:
+        radial-gradient(circle at 8% 12%, rgba(38, 200, 180, 0.28), transparent 28%),
+        linear-gradient(145deg, rgba(10, 45, 67, 0.46), rgba(255, 255, 255, 0.08));
+}
+
+.login-hero-panel::after {
+    content: "";
+    position: absolute;
+    right: 8%;
+    bottom: 9%;
+    width: min(320px, 36vw);
+    aspect-ratio: 1;
+    border-radius: 42px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(38, 200, 180, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    transform: rotate(14deg);
+}
+
+.login-brand {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.login-brand strong {
+    display: block;
+    color: white;
+    font-family: "Sora", sans-serif;
+    font-size: 1.05rem;
+}
+
+.login-brand p {
+    margin: 4px 0 0;
+    color: rgba(239, 252, 255, 0.76);
+}
+
+.login-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 620px;
+}
+
+.login-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: #b6fff4;
+    background: rgba(38, 200, 180, 0.16);
+    border: 1px solid rgba(142, 255, 242, 0.22);
+    font-size: 0.78rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.login-pill::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.login-copy h1 {
+    max-width: 12ch;
+    margin: 22px 0 16px;
+    font-family: "Sora", sans-serif;
+    font-size: clamp(2.55rem, 6vw, 5.4rem);
+    line-height: 0.98;
+    letter-spacing: 0;
+}
+
+.login-copy p {
+    max-width: 560px;
+    margin: 0;
+    color: rgba(239, 252, 255, 0.78);
+    font-size: 1.05rem;
+    line-height: 1.65;
+}
+
+.login-stat-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 190px));
+    gap: 14px;
+}
+
+.login-stat-grid div {
+    min-height: 100px;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.login-stat-grid strong,
+.login-stat-grid span {
+    display: block;
+}
+
+.login-stat-grid strong {
+    color: white;
+    font-family: "Sora", sans-serif;
+    font-size: 1.4rem;
+}
+
+.login-stat-grid span {
+    margin-top: 8px;
+    color: rgba(239, 252, 255, 0.76);
+    line-height: 1.45;
+}
+
+.login-card {
+    align-self: center;
+    padding: 34px;
+    border-radius: 28px;
+    background:
+        radial-gradient(circle at 20% 0%, rgba(38, 200, 180, 0.2), transparent 28%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.38));
+}
+
+.login-card-icon {
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    color: white;
+    background: linear-gradient(145deg, #18d0b7, #238ed6);
+    box-shadow: 0 18px 38px rgba(25, 160, 185, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+    font-family: "Sora", sans-serif;
+    font-weight: 900;
+}
+
+.login-card h2 {
+    margin: 6px 0 8px;
+    font-family: "Sora", sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0;
+}
+
+.login-card-subtitle {
+    margin: 0 0 22px;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.login-form {
+    display: grid;
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.login-form input {
+    min-height: 52px;
+}
+
+.login-form button {
+    min-height: 54px;
+    margin-top: 2px;
+    color: white;
+    background: linear-gradient(135deg, #23d1b9 0%, #218bd8 100%);
+    box-shadow: 0 18px 38px rgba(25, 160, 185, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.login-demo-access {
+    margin-top: 20px;
+    padding: 14px;
+    display: grid;
+    gap: 6px;
+    border-radius: 16px;
+    color: #486579;
+    background: rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.44);
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
 @media (max-width: 1120px) {
     .app-shell {
         grid-template-columns: 1fr;
@@ -836,6 +1067,14 @@ tr:last-child td {
     .content-grid.two-columns,
     .role-grid {
         grid-template-columns: 1fr;
+    }
+
+    .login-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .login-hero-panel {
+        min-height: 520px;
     }
 }
 
@@ -879,5 +1118,29 @@ tr:last-child td {
 
     .metric-card::after {
         display: none;
+    }
+
+    .login-shell {
+        width: min(100% - 20px, 1180px);
+        padding: 14px 0 22px;
+    }
+
+    .login-hero-panel {
+        min-height: 390px;
+        padding: 22px;
+        border-radius: 22px;
+    }
+
+    .login-copy h1 {
+        font-size: 2.5rem;
+    }
+
+    .login-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .login-card {
+        padding: 22px;
+        border-radius: 22px;
     }
 }

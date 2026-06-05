@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/css/**", "/login").permitAll()
+                        .requestMatchers("/css/**", "/img/**", "/login").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").hasAnyRole("ADMIN", "ATENDENTE")
                         .requestMatchers(HttpMethod.GET, "/", "/dashboard", "/pacientes", "/consultas", "/api/**")
                         .hasAnyRole("ADMIN", "ATENDENTE")
@@ -35,7 +35,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/medicos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/consultas/*/status").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .permitAll())
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
