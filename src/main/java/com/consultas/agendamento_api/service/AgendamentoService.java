@@ -1,5 +1,8 @@
 package com.consultas.agendamento_api.service;
 
+import com.consultas.agendamento_api.api.dto.ConsultaRequest;
+import com.consultas.agendamento_api.api.dto.MedicoRequest;
+import com.consultas.agendamento_api.api.dto.PacienteRequest;
 import com.consultas.agendamento_api.model.Consulta;
 import com.consultas.agendamento_api.model.Medico;
 import com.consultas.agendamento_api.model.Paciente;
@@ -32,42 +35,73 @@ public class AgendamentoService {
 
     @Transactional
     public Paciente cadastrarPaciente(PacienteForm form) {
-        if (pacienteRepository.existsByEmailIgnoreCase(form.getEmail())) {
+        return cadastrarPaciente(form.getNome(), form.getEmail(), form.getTelefone(), form.getDataNascimento());
+    }
+
+    @Transactional
+    public Paciente cadastrarPaciente(PacienteRequest request) {
+        return cadastrarPaciente(request.nome(), request.email(), request.telefone(), request.dataNascimento());
+    }
+
+    private Paciente cadastrarPaciente(String nome, String email, String telefone, java.time.LocalDate dataNascimento) {
+        if (pacienteRepository.existsByEmailIgnoreCase(email)) {
             throw new RegraNegocioException("Ja existe um paciente cadastrado com este e-mail.");
         }
 
         Paciente paciente = new Paciente();
-        paciente.setNome(form.getNome());
-        paciente.setEmail(form.getEmail());
-        paciente.setTelefone(form.getTelefone());
-        paciente.setDataNascimento(form.getDataNascimento());
+        paciente.setNome(nome);
+        paciente.setEmail(email);
+        paciente.setTelefone(telefone);
+        paciente.setDataNascimento(dataNascimento);
         return pacienteRepository.save(paciente);
     }
 
     @Transactional
     public Medico cadastrarMedico(MedicoForm form) {
-        if (medicoRepository.existsByCrmIgnoreCase(form.getCrm())) {
+        return cadastrarMedico(form.getNome(), form.getEspecialidade(), form.getCrm(), form.getEmail());
+    }
+
+    @Transactional
+    public Medico cadastrarMedico(MedicoRequest request) {
+        return cadastrarMedico(request.nome(), request.especialidade(), request.crm(), request.email());
+    }
+
+    private Medico cadastrarMedico(String nome, String especialidade, String crm, String email) {
+        if (medicoRepository.existsByCrmIgnoreCase(crm)) {
             throw new RegraNegocioException("Ja existe um medico cadastrado com este CRM.");
         }
 
         Medico medico = new Medico();
-        medico.setNome(form.getNome());
-        medico.setEspecialidade(form.getEspecialidade());
-        medico.setCrm(form.getCrm());
-        medico.setEmail(form.getEmail());
+        medico.setNome(nome);
+        medico.setEspecialidade(especialidade);
+        medico.setCrm(crm);
+        medico.setEmail(email);
         return medicoRepository.save(medico);
     }
 
     @Transactional
     public Consulta agendarConsulta(ConsultaForm form) {
-        Paciente paciente = pacienteRepository.findById(form.getPacienteId())
+        return agendarConsulta(form.getPacienteId(), form.getMedicoId(), form.getDataHora(), form.getObservacoes());
+    }
+
+    @Transactional
+    public Consulta agendarConsulta(ConsultaRequest request) {
+        return agendarConsulta(request.pacienteId(), request.medicoId(), request.dataHora(), request.observacoes());
+    }
+
+    private Consulta agendarConsulta(
+            Long pacienteId,
+            Long medicoId,
+            java.time.LocalDateTime dataHora,
+            String observacoes) {
+        Paciente paciente = pacienteRepository.findById(pacienteId)
                 .orElseThrow(() -> new RegraNegocioException("Paciente nao encontrado."));
-        Medico medico = medicoRepository.findById(form.getMedicoId())
+        Medico medico = medicoRepository.findById(medicoId)
                 .orElseThrow(() -> new RegraNegocioException("Medico nao encontrado."));
 
         boolean horarioOcupado = consultaRepository.existsByMedicoIdAndDataHoraAndStatusNot(
                 medico.getId(),
-                form.getDataHora(),
+                dataHora,
                 StatusConsulta.CANCELADA);
 
         if (horarioOcupado) {
@@ -77,8 +111,8 @@ public class AgendamentoService {
         Consulta consulta = new Consulta();
         consulta.setPaciente(paciente);
         consulta.setMedico(medico);
-        consulta.setDataHora(form.getDataHora());
-        consulta.setObservacoes(form.getObservacoes());
+        consulta.setDataHora(dataHora);
+        consulta.setObservacoes(observacoes);
         consulta.setStatus(StatusConsulta.AGENDADA);
         return consultaRepository.save(consulta);
     }
